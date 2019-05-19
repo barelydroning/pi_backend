@@ -36,6 +36,6 @@ socket.on('disconnect', on_disconnect)
 socket.on('reconnect', on_reconnect)
 socket.on('command', on_command)
 
-socket.emit('connect_drone')
+socket.emit('connect_rover')
 
 socket.wait()
