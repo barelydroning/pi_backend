@@ -3,6 +3,7 @@ from socketIO_client_nexus import SocketIO, LoggingNamespace
 import logging
 import RPi.GPIO as GPIO
 import time
+import asyncio
 
 GPIO.setmode(GPIO.BCM)
 
@@ -24,6 +25,12 @@ SERVER_IP = 'http://192.168.0.29'
 # SERVER_IP = 'http://192.168.1.128'
 SERVER_PORT = 3001
 
+continuous = False
+
+async def continuous_loop():
+    while (continuous):
+        distance = get_measurement()
+        print('Distance is:', distance)
 
 def on_connect():
     print('connect')
@@ -44,9 +51,14 @@ def on_command(data):
         GPIO.cleanup()
         sys.exit()
         print('KILL')
-    if _type == 'distance':
+    elif _type == 'distance':
         distance = get_measurement()
         print('Distance is:', distance)
+    elif _type == 'start_loop':
+        continuous = True
+        asyncio.run(continuous_loop())
+    elif _type == 'quit_loop':
+        continuous = False
     else:
         print('OTHER COMMAND')
 
@@ -73,7 +85,6 @@ def get_measurement():
     
 
 # get_measurement()
-
 
 
 
