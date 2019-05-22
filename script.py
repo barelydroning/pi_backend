@@ -107,6 +107,7 @@ def get_measurement():
 
 
 thread = Thread(target=continuous_loop)
+thread.setDaemon(True)
 thread.start()
 socket = SocketIO(SERVER_IP, SERVER_PORT)
 socket.on('connect', on_connect)
