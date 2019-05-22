@@ -1,3 +1,4 @@
+import sys
 from socketIO_client_nexus import SocketIO, LoggingNamespace
 import logging
 import RPi.GPIO as GPIO
@@ -40,7 +41,12 @@ def on_command(data):
     _type = data['type']
 
     if _type == 'kill':
+        GPIO.cleanup()
+        sys.exit()
         print('KILL')
+    if _type == 'distance':
+        distance = get_measurement()
+        print('Distance is:', distance)
     else:
         print('OTHER COMMAND')
 
@@ -61,11 +67,13 @@ def get_measurement():
 
     distance = round(17150 * pulse_duration, 2)
 
-    print('Distance is:', distance)
 
-    GPIO.cleanup()
+    return distance
 
-get_measurement()
+
+    
+
+# get_measurement()
 
 
 
