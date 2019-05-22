@@ -3,6 +3,9 @@ from socketIO_client_nexus import SocketIO, LoggingNamespace
 import logging
 import RPi.GPIO as GPIO
 import time
+from queue import Queue
+from threading import Thread
+import threading
 import asyncio
 
 GPIO.setmode(GPIO.BCM)
@@ -25,13 +28,20 @@ SERVER_IP = 'http://192.168.0.29'
 # SERVER_IP = 'http://192.168.1.128'
 SERVER_PORT = 3001
 
-continuous = False
+START_MSG = "START"
+STOP_MSG = "STOP"
 
-async def continuous_loop():
-    while (continuous):
-        distance = get_measurement()
-        print('Distance is:', distance)
+q = Queue()
 
+def continuous_loop():
+    while True:
+        # get start message (blocking)
+        while q.get() != START_MSG:
+            pass
+        while q.get_nowait() != STOP_MSG:
+            distance = get_measurement()
+            print('Distance is:', distance)
+        
 def on_connect():
     print('connect')
 
@@ -55,10 +65,9 @@ def on_command(data):
         distance = get_measurement()
         print('Distance is:', distance)
     elif _type == 'start_loop':
-        continuous = True
-        asyncio.run(continuous_loop())
+        q.put(START_MSG)
     elif _type == 'quit_loop':
-        continuous = False
+        q.put(STOP_MSG)
     else:
         print('OTHER COMMAND')
 
@@ -86,13 +95,13 @@ def get_measurement():
 
 # get_measurement()
 
-while (True):
-    distance = get_measurement()
-    print('Distance is:', distance)
-    time.sleep(.05)
+# while (True):
+#     distance = get_measurement()
+#     print('Distance is:', distance)
+#     time.sleep(.05)
 
 
-
+Thread(target=continuous_loop)
 socket = SocketIO(SERVER_IP, SERVER_PORT)
 socket.on('connect', on_connect)
 socket.on('disconnect', on_disconnect)
