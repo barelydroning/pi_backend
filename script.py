@@ -6,12 +6,14 @@ import time
 from queue import Queue
 from threading import Thread
 import threading
-import asyncio
+import json
 
 GPIO.setmode(GPIO.BCM)
 
 PIN_TRIGGER = 15
 PIN_ECHO = 14
+
+SOCKET_ID = None
 
 GPIO.setup(PIN_TRIGGER, GPIO.OUT)
 GPIO.setup(PIN_ECHO, GPIO.IN)
@@ -19,6 +21,8 @@ GPIO.setup(PIN_ECHO, GPIO.IN)
 GPIO.output(PIN_TRIGGER, False)
 print('Waiting for Sensor to settle')
 time.sleep(2)
+
+socket = SocketIO(SERVER_IP, SERVER_PORT)
 
 
 SERVER_IP = 'http://192.168.0.29'
@@ -37,6 +41,11 @@ def continuous_loop():
             pass
         while get_poll(q) != STOP_MSG:
             distance = get_measurement()
+            json_blob = {
+                'rover': SOCKET_ID,
+                'distance': distance
+            }
+            socket.emit('rover_data', json.dumps(json_blob))
             print('Distance is:', distance)
 
 def get_poll(q):
@@ -57,6 +66,8 @@ def on_disconnect():
 def on_reconnect():
     print('reconnect')
 
+def on_socket_id(socket_id):
+    SOCKET_ID = socket_id
 
 def on_command(data):
     _type = data['type']
@@ -107,14 +118,12 @@ def get_measurement():
 thread = Thread(target=continuous_loop)
 thread.setDaemon(True)
 thread.start()
-socket = SocketIO(SERVER_IP, SERVER_PORT)
 socket.on('connect', on_connect)
 socket.on('disconnect', on_disconnect)
 socket.on('reconnect', on_reconnect)
 socket.on('command', on_command)
+socket.on('socket_id', on_socket_id)
 
 socket.emit('connect_rover')
 
 socket.wait()
-
-
