@@ -17,8 +17,8 @@ GPIO.output(PIN_TRIGGER, False)
 print('Waiting for Sensor to settle')
 time.sleep(2)
 
-logging.getLogger('socketIO-client').setLevel()
-logging.basicConfig()
+#logging.getLogger('socketIO-client').setLevel()
+#logging.basicConfig()
 
 
 SERVER_IP = 'http://192.168.0.29'
