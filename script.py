@@ -65,6 +65,8 @@ def get_measurement():
 
     GPIO.cleanup()
 
+get_measurement()
+
 
 
 
