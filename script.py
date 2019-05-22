@@ -22,12 +22,14 @@ GPIO.output(PIN_TRIGGER, False)
 print('Waiting for Sensor to settle')
 time.sleep(2)
 
-socket = SocketIO(SERVER_IP, SERVER_PORT)
 
 
 SERVER_IP = 'http://192.168.0.29'
 # SERVER_IP = 'http://192.168.1.128'
 SERVER_PORT = 3001
+
+socket = SocketIO(SERVER_IP, SERVER_PORT)
+
 
 START_MSG = "START"
 STOP_MSG = "STOP"
