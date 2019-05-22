@@ -86,8 +86,10 @@ def get_measurement():
 
 # get_measurement()
 
-distance = get_measurement()
-print('Distance is:', distance)
+while (True):
+    distance = get_measurement()
+    print('Distance is:', distance)
+    time.sleep(.05)
 
 
 
