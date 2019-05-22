@@ -20,9 +20,6 @@ GPIO.output(PIN_TRIGGER, False)
 print('Waiting for Sensor to settle')
 time.sleep(2)
 
-#logging.getLogger('socketIO-client').setLevel()
-#logging.basicConfig()
-
 
 SERVER_IP = 'http://192.168.0.29'
 # SERVER_IP = 'http://192.168.1.128'
@@ -34,20 +31,17 @@ STOP_MSG = "STOP"
 q = Queue()
 
 def continuous_loop():
-    print('thread started')
     while True:
-        print('hejsan')
         # get start message (blocking)
         while q.get() != START_MSG:
-            print('GOT NON START')
-            # pass
+            pass
         while get_poll(q) != STOP_MSG:
             distance = get_measurement()
             print('Distance is:', distance)
 
 def get_poll(q):
     try:
-        msg = q.get_nowait()
+        msg = q.get(block=True, timeout=0.1)
         return msg
     except:
         return None
@@ -70,15 +64,12 @@ def on_command(data):
     if _type == 'kill':
         GPIO.cleanup()
         sys.exit()
-        print('KILL')
     elif _type == 'distance':
         distance = get_measurement()
         print('Distance is:', distance)
     elif _type == 'start_loop':
-        print('start loop')
         q.put(START_MSG)
     elif _type == 'quit_loop':
-        print('quit loop')
         q.put(STOP_MSG)
     else:
         print('OTHER COMMAND')
