@@ -41,9 +41,16 @@ def continuous_loop():
         while q.get() != START_MSG:
             print('GOT NON START')
             # pass
-        while q.get_nowait() != STOP_MSG:
+        while get_poll(q) != STOP_MSG:
             distance = get_measurement()
             print('Distance is:', distance)
+
+def get_poll(q):
+    try:
+        msg = q.get_nowait()
+        return msg
+    except:
+        return None
         
 def on_connect():
     print('connect')
