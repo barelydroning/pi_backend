@@ -37,7 +37,8 @@ def continuous_loop():
     while True:
         # get start message (blocking)
         while q.get() != START_MSG:
-            pass
+            print('GOT NON START')
+            # pass
         while q.get_nowait() != STOP_MSG:
             distance = get_measurement()
             print('Distance is:', distance)
@@ -65,8 +66,10 @@ def on_command(data):
         distance = get_measurement()
         print('Distance is:', distance)
     elif _type == 'start_loop':
+        print('start loop')
         q.put(START_MSG)
     elif _type == 'quit_loop':
+        print('quit loop')
         q.put(STOP_MSG)
     else:
         print('OTHER COMMAND')
