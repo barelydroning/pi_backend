@@ -86,6 +86,9 @@ def get_measurement():
 
 # get_measurement()
 
+distance = get_measurement()
+print('Distance is:', distance)
+
 
 
 socket = SocketIO(SERVER_IP, SERVER_PORT)
@@ -97,3 +100,5 @@ socket.on('command', on_command)
 socket.emit('connect_rover')
 
 socket.wait()
+
+
