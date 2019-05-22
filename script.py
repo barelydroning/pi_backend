@@ -16,7 +16,7 @@ GPIO.output(PIN_TRIGGER, False)
 print('Waiting for Sensor to settle')
 time.sleep(2)
 
-logging.getLogger('socketIO-client').setLevel(logging.DEBUG)
+logging.getLogger('socketIO-client').setLevel()
 logging.basicConfig()
 
 
@@ -66,7 +66,6 @@ def get_measurement():
     pulse_duration = pulse_end - pulse_start
 
     distance = round(17150 * pulse_duration, 2)
-
 
     return distance
 
