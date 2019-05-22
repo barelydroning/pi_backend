@@ -106,7 +106,8 @@ def get_measurement():
 #     time.sleep(.05)
 
 
-Thread(target=continuous_loop)
+thread = Thread(target=continuous_loop)
+thread.start()
 socket = SocketIO(SERVER_IP, SERVER_PORT)
 socket.on('connect', on_connect)
 socket.on('disconnect', on_disconnect)
