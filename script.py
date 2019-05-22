@@ -34,7 +34,9 @@ STOP_MSG = "STOP"
 q = Queue()
 
 def continuous_loop():
+    print('thread started')
     while True:
+        print('hejsan')
         # get start message (blocking)
         while q.get() != START_MSG:
             print('GOT NON START')
